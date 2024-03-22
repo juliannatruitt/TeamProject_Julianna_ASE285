@@ -4,9 +4,9 @@
 // nodemon ./index.js
 // Access this server with http://localhost:5500
 
-const {URI} = require('./_config.js');
-const { TodoApp } = require('../util/utility.js');
-const util = require('../util/mongodbutil.js');
+const {URI} = require('./util/config.js');
+const { TodoApp } = require('./util/utility.js');
+const util = require('./util/mongodbutil.js');
 
 const DATABASE = 'todoapp';
 const POSTS = 'posts';
@@ -44,13 +44,23 @@ app.get('/', async function(req, resp) {
   } 
 });
   
-app.get('/list', async function(req, resp){
+app.get('/list', async function(req, res){
   try {
-    await postapp.runListGet(req, resp);
+    const PAGE_SIZE = 5; // Define the number of posts per page
+    const currentPage = parseInt(req.query.page) || 1; // Extract current page from query parameter, default to 1 if not provided
+
+    // Fetch posts for the current page
+    const skip = (currentPage - 1) * PAGE_SIZE; // Calculate the number of documents to skip
+    const posts = await postapp.runListGet(req, res, PAGE_SIZE, skip);
+
+    // Render the list.ejs template with the posts and currentPage
+    res.render('list.ejs', { posts: posts, currentPage: currentPage });
   } catch (e) {
     console.error(e);
+    res.status(500).send({ error: `Error from /list route: ${e.message}` });
   }   
 });
+
   
 app.delete('/delete', async function(req, resp){   
   try {
@@ -95,6 +105,16 @@ app.get('/posts', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+/*app.get('/completed', async (req, res) => {
+  try {
+    //await something
+    //await postapp.runCompletedFinder()
+      
+  } catch (e) {
+    console.error(e);
+});*/
+
 
 module.exports = app;
 
