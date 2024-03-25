@@ -5,8 +5,8 @@
 // Access this server with http://localhost:5500
 
 const {URI} = require('./_config.js');
-const { TodoApp } = require('../util/utility.js');
-const util = require('../util/mongodbutil.js');
+const { TodoApp } = require('./util/utility.js');
+const util = require('./util/mongodbutil.js');
 
 const DATABASE = 'todoapp';
 const POSTS = 'posts';
@@ -95,6 +95,15 @@ app.get('/posts', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.get('/calander', async function (req, res){
+  try{
+    await postapp.runCalanderGet(req, res);
+  }
+  catch (e){
+    console.error(e);
+  }
+})
 
 module.exports = app;
 

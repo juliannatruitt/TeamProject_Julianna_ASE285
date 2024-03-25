@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+
+  <title>Calander</title>
+  <style>
+    td {
+        border: 1px solid #000;
+        padding: 10px;
+        text-align: center;
+        height: 75px;
+        width: 75px;
+        text-align: left;
+    }
+    div h1 {
+      display: inline-block;
+      margin-right: 10px; 
+    }
+    div {
+        text-align: center;
+    }
+
+    td div {
+        border-style: solid;
+        border-radius: 25px;
+    }
+
+
+</style>
+</head>
+
+<body>
+    <%- include('nav.ejs') %>
+      
+    <div class="container text-center">
+        <table style="width:100%" id="calander">
+            <div>
+                <h1 id="go_back_month"><</h1><h1 id="month"></h1>
+                <h1 id="year"></h1> <h1 id="go_forward_month">></h1>
+            <div>
+        </table>
+    </div>
+    
+          <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+          
+  
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+        <script>
+            let current_date = new Date();
+            let current_month = current_date.getMonth();
+            let year = current_date.getFullYear();
+    
+            function display_calander(date_month_number, thisyear){
+                current_month = date_month_number;
+                year = thisyear;
+
+                const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                let_firstday_of_current_month = new Date(year, current_month, 1);
+                let_lastday_of_current_month = new Date(year, current_month+1, 0);
+                weekday_of_firstday = let_firstday_of_current_month.getDay();
+
+                let tasksFromTheDatabase = JSON.parse('<%- JSON.stringify(allTasks) %>');
+                
+    
+                let countingdays=1; 
+                for (let i=0; i<6; i++){
+                    let html = `<tr>`
+                    setdate=false;
+                    for (let k=0; k < 7; k++){
+                        if (countingdays <= let_lastday_of_current_month.getDate()){ 
+                            if (i===0 && !setdate){
+                                if (weekday_of_firstday === k){
+                                    //review this!
+                                    html += `<td>${countingdays}</td>`;
+                                    for (let task=0; task<tasksFromTheDatabase.length; task++){
+                                        let date = new Date(tasksFromTheDatabase[task].date);
+                                        if ((date.getMonth() === current_month) && (date.getFullYear() === year) && (date.getDate() === countingdays)){
+                                            html += `<br />${tasksFromTheDatabase[task].title}`;
+                                        }
+                                    }
+                                    
+                                    countingdays++;
+                                    setdate=true;
+                                }
+                                else{
+                                    html += `<td></td>`;
+                                }
+                            }
+                            else{
+                                html += `<td>${countingdays}`;
+                                for (let task=0; task<tasksFromTheDatabase.length; task++){
+                                    let date = new Date(tasksFromTheDatabase[task].date);
+                                    if ((date.getMonth() === current_month) && (date.getFullYear() === year) && (date.getDate() === countingdays)){
+                                        html += `<br /><div>${tasksFromTheDatabase[task].title}</div>`;
+                                    }
+                                }
+                                html += `</td>`;
+                                countingdays++;
+                            }
+                        }
+                        else{
+                            html += `<td></td>`;
+                        }
+                    }
+                    html += `</tr>`
+                    $('#calander').append(html);
+                }
+                $('#year').empty();
+                $('#month').empty();
+                $('#year').append(year);
+                $('#month').append(monthNames[current_month]);
+            }
+
+            function displayDaysOfTheWeek(){
+                const daysOfTheWeek = [
+                'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                'Saturday'];
+
+                let html = `<tr>`;
+                for(let i=0; i<7; i++){
+                    html +=  `<td>${daysOfTheWeek[i]}</td>`;
+                }
+                html += '</tr>'
+                $('#calander').append(html);
+            }
+
+           //function getAllTheTasks(){
+           //    let tasksFromTheDatabase = JSON.parse('<%- JSON.stringify(allTasks) %>');
+           //    for (let i=0; i<tasksFromTheDatabase; i++){
+
+           //    }
+           //}
+
+            displayDaysOfTheWeek();
+            display_calander(current_month, year);
+    
+            $(()=> {
+                $(document).on('click', "#go_back_month", function (){
+                    $('#calander').empty();
+                    if (current_month-1 < 0){
+                        current_month=12;
+                        year=year-1;
+                    }
+                    current_month=current_month-1
+                    displayDaysOfTheWeek();
+                    display_calander(current_month,year);
+                })
+    
+                $(document).on('click', "#go_forward_month", function (){
+                    $('#calander').empty();
+                    if (current_month+1 > 11){
+                        current_month=0;
+                        year=year+1;
+                    }
+                    else{
+                        current_month=current_month+1
+                    }
+                    displayDaysOfTheWeek();
+                    display_calander(current_month,year);
+                })
+            });
+          </script>
+</body>
+  
+</html>
