@@ -18,6 +18,7 @@
           <li class="todo-list-item">
             <div class="todo-list-item-name"><%= details.title %></div>
             <div class="todo-list-item-date"><%= details.date.toDateString() %></div> 
+            <div class="todo-list-item-complete"><%= details.complete %></div>
             <a href="/edit/<%= details._id %>" class="edit"> <span class="fas fa-edit"></span>
             </a>
             <a href="/remove/<%= details._id %>" class="remove"> <span class="fas fa-times"></span>

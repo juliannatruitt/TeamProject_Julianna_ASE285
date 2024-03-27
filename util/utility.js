@@ -8,6 +8,47 @@ class TodoApp {
     this.counter = counter
   }
   
+  async runAddPost(req, resp) {
+    try {
+      let query = { name: 'Total Post' };
+      let res = await util.read(this.uri, this.database, this.counter, query);
+      let totalPost = 0;
+      if (res.length != 0) {
+        totalPost = res[0].totalPost;
+        console.log(res);
+      } else {
+        query = { name: 'Total Post', totalPost: 0 };
+        await util.create(this.uri, this.database, this.counter, query);
+      }
+  
+      query = { name: 'Latest Post ID' };
+      res = await util.read(this.uri, this.database, this.counter, query);
+      let latestIdNumber = 0;
+      if (res.length != 0) {
+        latestIdNumber = res[0].latestIdNumber;
+      } else {
+        query = { name: 'Latest Post ID', latestIdNumber: 0 };
+        await util.create(this.uri, this.database, this.counter, query);
+      }
+  
+      query = { _id: latestIdNumber + 1, title: req.body.title, date: req.body.date, completed: false }; // Set completed to false
+      res = await util.create(this.uri, this.database, this.posts, query);
+  
+      query = { name: 'Total Post' };
+      const stage = { $inc: { totalPost: 1 } };
+      await util.update(this.uri, this.database, this.counter, query, stage);
+  
+      // Increment latestIdNumber when adding a new post
+      const incrementLatestId = { $inc: { latestIdNumber: 1 } };
+      await util.update(this.uri, this.database, this.counter, { name: 'Latest Post ID' }, incrementLatestId);
+  
+      this.runListGet(req, resp);
+    } catch (error) {
+      console.error(error);
+      resp.status(500).send({ error: `Error from runAddPost: ${error.message}` });
+    }
+  }
+  
     
   async runListGet(req, resp) {
       try {
@@ -29,6 +70,8 @@ class TodoApp {
       req.body._id = parseInt(req.body._id);
       console.log(req.body._id);
       await util.delete_document(this.uri, this.database, this.posts, req.body);
+  
+      // Don't decrement totalPost here
   
       this.runListGet(req, resp);
     } catch (e) {

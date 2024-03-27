@@ -33,6 +33,7 @@ async function create(uri, databaseName, collectionName, document) {
   try {
     client = await connect(uri);
     const collection = client.db(databaseName).collection(collectionName);
+    document.completed = false;
     result = await collection.insertOne(document);
     console.log(`Inserted document with ID ${result.insertedId}`);
   } catch (error) {
@@ -52,7 +53,6 @@ async function read(uri, databaseName, collectionName, query) {
     const collection = client.db(databaseName).collection(collectionName);
     result = await collection.find(query).toArray();
     console.log(`read: Found ${result.length} documents from ${query} - ${result}`);
-    //console.log(result);
   } catch (error) {
     console.error(error);
   } finally {

@@ -44,22 +44,21 @@ app.get('/', async function(req, resp) {
   } 
 });
   
-app.get('/list', async function(req, res){
+app.get('/list', async function(req, res) {
   try {
-    const PAGE_SIZE = 5; // Define the number of posts per page
-    const currentPage = parseInt(req.query.page) || 1; // Extract current page from query parameter, default to 1 if not provided
+    // Fetch tasks from the database
+    const tasks = await util.read(URI, DATABASE, POSTS, {});
 
-    // Fetch posts for the current page
-    const skip = (currentPage - 1) * PAGE_SIZE; // Calculate the number of documents to skip
-    const posts = await postapp.runListGet(req, res, PAGE_SIZE, skip);
-
-    // Render the list.ejs template with the posts and currentPage
-    res.render('list.ejs', { posts: posts, currentPage: currentPage });
-  } catch (e) {
-    console.error(e);
-    res.status(500).send({ error: `Error from /list route: ${e.message}` });
-  }   
+    // Render the 'list.ejs' template and pass the 'posts' data
+    res.render('list.ejs', { posts: tasks }); // Change 'tasks' to 'posts'
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: `Error fetching tasks: ${error.message}` });
+  }
 });
+
+
+
 
   
 app.delete('/delete', async function(req, resp){   
@@ -106,14 +105,25 @@ app.get('/posts', async (req, res) => {
   }
 });
 
-/*app.get('/completed', async (req, res) => {
+app.post('/complete', async (req, res) => {
   try {
-    //await something
-    //await postapp.runCompletedFinder()
-      
-  } catch (e) {
-    console.error(e);
-});*/
+    const postId = req.body.postId;
+    // Update the task's completion status in the database
+    const result = await db.collection('counter').updateOne(
+      { _id: ObjectID(postId) },
+      { $set: { completed: true } }
+    );
+    if (result.modifiedCount === 1) {
+      res.sendStatus(200); // Send a success response if the task was updated
+    } else {
+      res.status(404).json({ error: 'Task not found' }); // Send a 404 error if the task ID was not found
+    }
+  } catch (error) {
+    console.error('Error completing task:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Send an error response
+  }
+});
+
 
 
 module.exports = app;

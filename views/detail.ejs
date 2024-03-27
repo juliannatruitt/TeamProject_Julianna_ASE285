@@ -26,6 +26,9 @@
           <h6 class="card-subtitle mb-2 text-muted">
             ID: <%= data[0]._id %> 
         </h6>
+        <h6 class="card-subtitle mb-2 text-muted">
+          Completed: <%= data[0].complete %> 
+        </h6>
 
 
           <form action="/edit/<%=data[0]._id%>" method="GET">
