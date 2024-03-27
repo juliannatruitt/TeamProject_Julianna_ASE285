@@ -21,7 +21,12 @@
         <li class="list-group-item">
           <h4> Title : <%= posts[i].title %>
           </h4>
-          <p> Date : <%= posts[i].date %>
+          <% let date = new Date(posts[i].date) %>
+          <% let datenumber = date.getUTCDate() %>
+          <% let month = date.getUTCMonth() %>
+          <% let year = date.getUTCFullYear() %>
+
+          <p> Date : <%= month+1 %>/<%= datenumber %>/<%= year %>
           </p>
           <button class="delete" data-id="<%= posts[i]._id %>">Delete</button>
         </li>
