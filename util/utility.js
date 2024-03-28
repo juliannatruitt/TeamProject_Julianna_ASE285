@@ -146,6 +146,21 @@ class TodoApp {
       throw e;
     }
   }
+
+  async updateCompletionStatus(req, resp) {
+    let id = parseInt(req.body.postId);
+      console.log(`updateComplettionStatus id: ${req.body.id} title: ${req.body.title} date: ${req.body.date} completed: ${req.body.completed}`)
+      let query = {_id: id}
+      let update = {$set: {completed: true}}
+    try {
+      let res = await util.update(this.uri, this.database, this.posts, query, update);
+      console.log(`completionStatus: Update complete ${res}`)
+      resp.redirect('/list')
+    } catch (error) {
+      console.error(error);
+      throw new Error(`Error updating completion status: ${error.message}`);
+    }
+  }
   
 }
 
