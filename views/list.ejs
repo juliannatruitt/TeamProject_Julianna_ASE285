@@ -28,9 +28,9 @@
         </div>
         <!-- Update button text based on completion status -->
         <% if (posts[i].completed) { %>
-          <button class="btn btn-primary complete" data-id="<%= posts[i]._id %>">Complete</button>
+          <button class="btn btn-secondary complete" data-id="<%= posts[i]._id %>">Complete</button>
         <% } else { %>
-          <button class="btn btn-secondary complete" data-id="<%= posts[i]._id %>">Incomplete</button>
+          <button class="btn btn-primary complete" data-id="<%= posts[i]._id %>">Incomplete</button>
         <% } %>
       </div>
     </li>
@@ -44,22 +44,28 @@
     $(document).ready(function () {
       $('.complete').click(function (e) {
         e.preventDefault();
-        console.log('complete clicked')
-        const postId = $(this).data('id');
+        console.log('complete clicked');
+        const button = $(this);
+        const postId = button.data('id');
         $.ajax({
           method: 'POST',
           url: '/complete',
           data: { postId: postId },
           success: function (response) {
-            console.log('Task completed successfully');
+            console.log('Task completion toggled successfully');
+            // Update button text based on the new completion status
+            button.text(response.completed ? 'Complete' : 'Incomplete');
+            // Toggle button style based on completion status
+            button.removeClass('btn-primary btn-secondary').addClass(response.completed ? 'btn-secondary' : 'btn-primary');
           },
           error: function (xhr, status, error) {
-            console.error('Error completing task:', error);
+            console.error('Error toggling task completion:', error);
           }
         });
       });
     });
   </script>
+  
 
   <!-- Bootstrap JS and Popper.js -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"

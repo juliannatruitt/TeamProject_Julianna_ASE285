@@ -151,14 +151,15 @@ class TodoApp {
     let id = parseInt(req.body.postId);
     let post = await util.read(this.uri, this.database, this.posts, { _id: id });
     
-    // check if the post exists and has completion status
+    // Check if the post exists and has a completion status
     if (!post || post.length === 0) {
         throw new Error(`Post with ID ${id} not found.`);
     }
 
-    // get current status
+    // Get the current completion status
     let currentCompletionStatus = post[0].completed;
-    //toggle completion
+
+    // Toggle the completion status
     let newCompletionStatus = !currentCompletionStatus;
 
     let query = { _id: id };
@@ -166,13 +167,16 @@ class TodoApp {
 
     try {
         let res = await util.update(this.uri, this.database, this.posts, query, update);
-        console.log(`Completion status toggled ID: ${id}. New status: ${newCompletionStatus}`);
-        resp.redirect('/list');
+        console.log(`Completion status toggled for post with ID ${id}. New status: ${newCompletionStatus}`);
+        
+        // Send back the updated completion status
+        resp.json({ completed: newCompletionStatus });
     } catch (error) {
         console.error(error);
         throw new Error(`Error updating completion status: ${error.message}`);
     }
 }
+
 
   
 }
