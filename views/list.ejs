@@ -26,7 +26,6 @@
           <p> Date : <%= posts[i].date %>
           </p>
         </div>
-        <!-- Update button text based on completion status -->
         <% if (posts[i].completed) { %>
           <button class="btn btn-secondary complete" data-id="<%= posts[i]._id %>">Complete</button>
         <% } else { %>
@@ -53,9 +52,7 @@
           data: { postId: postId },
           success: function (response) {
             console.log('Task completion toggled successfully');
-            // Update button text based on the new completion status
             button.text(response.completed ? 'Complete' : 'Incomplete');
-            // Toggle button style based on completion status
             button.removeClass('btn-primary btn-secondary').addClass(response.completed ? 'btn-secondary' : 'btn-primary');
           },
           error: function (xhr, status, error) {

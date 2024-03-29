@@ -150,16 +150,12 @@ class TodoApp {
   async updateCompletionStatus(req, resp) {
     let id = parseInt(req.body.postId);
     let post = await util.read(this.uri, this.database, this.posts, { _id: id });
-    
-    // Check if the post exists and has a completion status
+
     if (!post || post.length === 0) {
         throw new Error(`Post with ID ${id} not found.`);
     }
 
-    // Get the current completion status
     let currentCompletionStatus = post[0].completed;
-
-    // Toggle the completion status
     let newCompletionStatus = !currentCompletionStatus;
 
     let query = { _id: id };
@@ -167,18 +163,14 @@ class TodoApp {
 
     try {
         let res = await util.update(this.uri, this.database, this.posts, query, update);
-        console.log(`Completion status toggled for post with ID ${id}. New status: ${newCompletionStatus}`);
-        
-        // Send back the updated completion status
+        console.log(`Completion status toggled for ID: ${id}. New status: ${newCompletionStatus}`);
         resp.json({ completed: newCompletionStatus });
     } catch (error) {
         console.error(error);
         throw new Error(`Error updating completion status: ${error.message}`);
     }
-}
+  }
 
-
-  
 }
 
 module.exports.TodoApp = TodoApp;
