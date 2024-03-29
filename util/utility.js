@@ -149,18 +149,31 @@ class TodoApp {
 
   async updateCompletionStatus(req, resp) {
     let id = parseInt(req.body.postId);
-      console.log(`updateComplettionStatus id: ${req.body.id} title: ${req.body.title} date: ${req.body.date} completed: ${req.body.completed}`)
-      let query = {_id: id}
-      let update = {$set: {completed: true}}
-    try {
-      let res = await util.update(this.uri, this.database, this.posts, query, update);
-      console.log(`completionStatus: Update complete ${res}`)
-      resp.redirect('/list')
-    } catch (error) {
-      console.error(error);
-      throw new Error(`Error updating completion status: ${error.message}`);
+    let post = await util.read(this.uri, this.database, this.posts, { _id: id });
+    
+    // check if the post exists and has completion status
+    if (!post || post.length === 0) {
+        throw new Error(`Post with ID ${id} not found.`);
     }
-  }
+
+    // get current status
+    let currentCompletionStatus = post[0].completed;
+    //toggle completion
+    let newCompletionStatus = !currentCompletionStatus;
+
+    let query = { _id: id };
+    let update = { $set: { completed: newCompletionStatus } };
+
+    try {
+        let res = await util.update(this.uri, this.database, this.posts, query, update);
+        console.log(`Completion status toggled ID: ${id}. New status: ${newCompletionStatus}`);
+        resp.redirect('/list');
+    } catch (error) {
+        console.error(error);
+        throw new Error(`Error updating completion status: ${error.message}`);
+    }
+}
+
   
 }
 
