@@ -165,10 +165,10 @@ async runJsonGet(req, resp) {
     }
   }
 
-  async runCalanderGet(req, res){
+  async runCalendarGet(req, res){
     try{
       let allTasks = await util.read(this.uri, this.database, this.posts, {});
-      res.render('calander.ejs', {allTasks});
+      res.render('calendar.ejs', {allTasks});
     }
     catch (e){
       console.error(e);

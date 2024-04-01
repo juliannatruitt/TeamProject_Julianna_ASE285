@@ -96,9 +96,9 @@ app.get('/posts', async (req, res) => {
   }
 });
 
-app.get('/calander', async function (req, res){
+app.get('/calendar', async function (req, res){
   try{
-    await postapp.runCalanderGet(req, res);
+    await postapp.runCalendarGet(req, res);
   }
   catch (e){
     console.error(e);
