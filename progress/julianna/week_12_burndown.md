@@ -1,2 +1,2 @@
 # Burndown - Week 12:
-- 0% burndown | 0 LoC | 0 tests
+- 40% burndown | 222 LoC | 1 test complete
