@@ -17,6 +17,13 @@
   <%- include('nav.ejs') %>
     <form action="/filter" method="POST" >
       <!-- add dropdown box for searching by name, date, or tag -->
+      <label for="filterBy">Choose Filter Type: </label>
+      <select name="filterBy" id="filterBy">
+        <option value="type">-filter type-</option>
+        <option value="all">All</option>
+        <option value="title">Title</option>
+        <option value="date">Date</option>
+      </select>
       <input type="text" class="form-control" placeholder="Search.." name="filter">
       <button type="submit" >Filter</button>
     </form>

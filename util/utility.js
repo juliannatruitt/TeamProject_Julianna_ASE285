@@ -54,7 +54,21 @@ class TodoApp {
   async runListFilter(req, resp) {
     try {
       //add check to see what drop down the user selected
-      let res = await util.read(this.uri, this.database, this.posts, {title : req.body.filter}) 
+      let q;
+      if (req.body.filterBy == 'title') {
+        q = {title : req.body.filter};
+      }
+      else if (req.body.filterBy == 'date') {
+        q = {date : req.body.filter};
+      }
+      else if (req.body.filterBy == '-filter type-') {
+        q = {};
+      }
+      else if (req.body.filterBy == 'all') {
+        q = {};
+      }
+
+      let res = await util.read(this.uri, this.database, this.posts, q) 
       if (res.length == 0) {
         resp.redirect('/list');
       } else {
