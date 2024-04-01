@@ -15,7 +15,11 @@
 
 <body>
   <%- include('nav.ejs') %>
-
+    <form action="/filter" method="POST" >
+      <!-- add dropdown box for searching by name, date, or tag -->
+      <input type="text" class="form-control" placeholder="Search.." name="filter">
+      <button type="submit" >Filter</button>
+    </form>
     <ul class="list-group">
       <% for (var i=0; i < posts.length; i++){ %>
         <li class="list-group-item">
