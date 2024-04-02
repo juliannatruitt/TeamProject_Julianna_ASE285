@@ -20,7 +20,11 @@ describe('Calendar View', () => {
 
     const tasks = await page.evaluate(() => {
       const taskElements = document.querySelectorAll('.date-cell div');
-      return Array.from(taskElements).map(taskElement => taskElement.textContent);
+      taskList=[];
+      taskElements.forEach(task => {
+        taskList.push(task.innerHTML);
+      });
+      return taskList;
     });
 
     //since the calander will load the month of the current date, it is expected that all the tasks in the 
