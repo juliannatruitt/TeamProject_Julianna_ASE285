@@ -24,18 +24,17 @@
           <label>ID</label>
                 <input type="text" class="form-control" value="<%= data[0]._id %>" readonly>
             </div>
-          <label>Update: What to do today</label>
+            
+          <label>Update: Task</label>
           <input type="text" class="form-control" name="title" value=<%=data[0].title %> />
+
+          <div class="form-group">
+            <label>Update: Date</label>
+            <input type="text" class="form-control" name="date" value=<%=data[0].date %> />
+          </div>
+          <button type="submit" class="btn btn-outline-secondary">Submit</button>
         </div>
-        <div class="form-group">
-          <label>Update: Date</label>
-          <input type="text" class="form-control" name="date" value=<%=data[0].date %> />
-        </div>
-        <div class="form-group">
-          <label>Update: Complete</label>
-          <input type="text" class="form-control" name="complete" value=<%=data[0].complete %> />
-        </div>
-        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+        
       </form>
     </div>
 
