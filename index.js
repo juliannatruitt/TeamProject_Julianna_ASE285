@@ -97,6 +97,15 @@ app.get('/posts', async (req, res) => {
   }
 });
 
+app.get('/calendar', async function (req, res){
+  try{
+    await postapp.runCalendarGet(req, res);
+  }
+  catch (e){
+    console.error(e);
+  }
+})
+
 app.post('/complete', async (req, res) => {
   try {
     const postID = req.body.postID;
