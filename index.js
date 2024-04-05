@@ -54,6 +54,14 @@ app.get('/list', async function(req, res) {
   }
 });
 
+app.post('/filter', async function(req, resp){
+  try {
+    await postapp.runListFilter(req, resp);
+  } catch (e) {
+    console.error(e);
+  }   
+});
+
   
 app.delete('/delete', async function(req, resp){   
   try {
