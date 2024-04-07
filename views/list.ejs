@@ -47,7 +47,7 @@
         <!-- buttons-->
         <div>
           <% if (posts[i].completed) { %>
-            <button class="btn btn-secondary complete" data-id="<%= posts[i]._id %>">Complete</button>
+            <button class="btn btn-success complete" data-id="<%= posts[i]._id %>">Complete</button>
           <% } else { %>
             <button class="btn btn-primary complete" data-id="<%= posts[i]._id %>">Incomplete</button>
           <% } %>
@@ -78,7 +78,7 @@
           success: function (response) {
             console.log('Task completion toggled successfully');
             button.text(response.completed ? 'Complete' : 'Incomplete');
-            button.removeClass('btn-primary btn-secondary').addClass(response.completed ? 'btn-secondary' : 'btn-primary');
+            button.removeClass('btn-primary btn-success').addClass(response.completed ? 'btn-success' : 'btn-primary');
           },
           error: function (xhr, status, error) {
             console.error('Error toggling task completion:', error);
@@ -97,20 +97,15 @@
         $.ajax({
           method: 'DELETE',
           url: '/delete',
-          // dataset.id is from: data-id= posts[i]._id 
           data: { _id: e.target.dataset.id }
         }).done((res) => {  
           $(this).parent('li').fadeOut();
           console.log('killed')
         }).fail((xhr, code, err) => {
-          // failure
         });
       });
 
     });
-
-    //handle edit button
-    //handle delete button
   </script>
   
 

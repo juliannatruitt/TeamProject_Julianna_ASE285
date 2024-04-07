@@ -128,11 +128,8 @@ app.get('/listview', async function(req, res) {
 
   let{ page, pageSize } = req.query
   try {
-    //const tasks = await util.read(URI, DATABASE, POSTS, {});
     const page = parseInt(page, 10) || 1;
     const pageSize = parseInt(pageSize, 10) || 50;
-    //const totalTasks = await postapp.countDocumentsInCollection(URI, DATABASE, POSTS)
-    //const tasks = await post
 
     res.render('list.ejs', { posts: tasks });
   } catch (error) {
