@@ -96,6 +96,23 @@ async function delete_document(uri, databaseName, collectionName, query) {
   return result;
 }
 
+async function count(uri, databaseName, collectionName, query) {
+  let client;
+  let count;
+  try {
+    client = await connect(uri);
+    const collection = client.db(databaseName).collection(collectionName);
+    count = await collection.countDocuments(query);
+    console.log(`Counted ${count} documents`);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+  return count;
+}
+
 
 module.exports.connect = connect;
 module.exports.run = run;
@@ -103,3 +120,4 @@ module.exports.create = create;
 module.exports.read = read;
 module.exports.update = update;
 module.exports.delete_document = delete_document;
+module.exports.count = count;

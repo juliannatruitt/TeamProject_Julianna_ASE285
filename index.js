@@ -124,17 +124,11 @@ app.post('/complete', async (req, res) => {
   }
 });
 
-app.get('/listview', async function(req, res) {
-
-  let{ page, pageSize } = req.query
+app.get('/pagination', async function(req, res) {
   try {
-    const page = parseInt(page, 10) || 1;
-    const pageSize = parseInt(pageSize, 10) || 50;
-
-    res.render('list.ejs', { posts: tasks });
+    await postapp.getTasksWithPagination(req, res);
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: `Error fetching tasks: ${error.message}` });
+    console.error('Error getting paginated tasks:', error);
   }
 });
 

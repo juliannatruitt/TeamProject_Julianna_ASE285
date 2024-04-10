@@ -86,7 +86,6 @@ class TodoApp {
   }
   
   async runEditIdGet(req, resp) {
-    // DEBUG
     console.log("runEditIdGet")
     console.log(req.params)
     try {
@@ -106,6 +105,7 @@ class TodoApp {
         resp.status(500).render('error.ejs', {error: error.message});
     }
   }
+
   async runEditPut(req, resp) {
     // DEBUG
     let id = parseInt(req.body._id);
@@ -154,14 +154,13 @@ async runJsonGet(req, resp) {
       }
       console.log(JSON.stringify(fulldocument));
       resp.render('jsonlist.ejs', {fulldocument});
-    }
-    else {
+    }else {
       resp.status(302).redirect('/');
-  }
-  }
-  catch (error){
-    console.log(error)
-    resp.status(500).render('error.ejs', {error: error.message});
+    }
+    }
+    catch (error){
+      console.log(error)
+      resp.status(500).render('error.ejs', {error: error.message});
     }
   }
 
@@ -193,7 +192,7 @@ async runJsonGet(req, resp) {
       console.error(e);
       resp.status(500).send({ error: `Error from runListFilter: ${e.message}` })
     } 
-}
+  }
 
   async runCalendarGet(req, res){
     try{
@@ -210,7 +209,7 @@ async runJsonGet(req, resp) {
     let post = await util.read(this.uri, this.database, this.posts, { _id: id });
 
     if (!post || post.length === 0) {
-        throw new Error(`Post with ID ${id} not found.`);
+      throw new Error(`Post with ID ${id} not found.`);
     }
 
     let currentCompletionStatus = post[0].completed;
@@ -226,6 +225,21 @@ async runJsonGet(req, resp) {
     } catch (error) {
         console.error(error);
         throw new Error(`Error updating completion status: ${error.message}`);
+    }
+  }
+
+  async getTasksWithPagination(req, resp) {
+    let { page, pageSize } = req.query;
+    try {
+      page = parseInt(page, 10) || 1;
+      pageSize = parseInt(pageSize, 10) || 5; // adjust tasks per page
+      const skip = (page - 1) * pageSize;
+      const posts = await util.read(this.uri, this.database, this.posts, {}, { limit: pageSize, skip });
+      const totalPosts = await util.count(this.uri, this.database, this.posts, {});
+      resp.render('pagination.ejs', { posts, totalPosts, page, pageSize });
+    } catch (error) {
+      console.error(error);
+      resp.status(500).json({ success: false, error: 'Error in utility' });
     }
   }
 
