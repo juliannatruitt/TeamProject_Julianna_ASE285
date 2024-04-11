@@ -22,7 +22,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
-app.use('/stylesheets', express.static('public/stylesheets'));
 app.use(methodOverride('_method'))
 
 app.listen(5500, function () {
