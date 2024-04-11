@@ -5,9 +5,10 @@
     }
     body {
     background: #e27442;
+    background-color: #c5fff5;
     }
     .todo-container {
-    color: white;
+    color: #c5fff5;
     position: absolute;
     top:50%;
     left: 50%;
