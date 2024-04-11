@@ -232,7 +232,7 @@ async runJsonGet(req, resp) {
     let { page, pageSize } = req.query;
     try {
       page = parseInt(page, 10) || 1;
-      pageSize = parseInt(pageSize, 10) || 5; // adjust tasks per page
+      pageSize = parseInt(pageSize, 10) || 6; // adjust tasks per page (6)
       const skip = (page - 1) * pageSize;
       const posts = await util.read(this.uri, this.database, this.posts, {}, { limit: pageSize, skip });
       const totalPosts = await util.count(this.uri, this.database, this.posts, {});

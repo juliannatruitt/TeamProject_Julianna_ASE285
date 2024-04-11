@@ -37,9 +37,8 @@
         <div class="card">
           <div class="card-body">
             <!-- Task -->
-            <h4 class="card-title"><%= posts[i].title %></h4>
+            <h4 class="card-title task-title"><%= posts[i].title %></h4>
             <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
-
             <!-- Buttons -->
             <div>
               <% if (posts[i].completed) { %>
@@ -100,7 +99,8 @@
           success: function (response) {
             console.log('Task completion toggled successfully');
             button.text(response.completed ? 'Complete' : 'Incomplete');
-            button.removeClass('btn-primary btn-success').addClass(response.completed ? 'btn-success' : 'btn-primary');
+            button.removeClass('btn-outline-primary btn-outline-success').addClass(response.completed ? 'btn-outline-success' : 'btn-outline-primary');
+            button.closest('.card-body').find('.task-title').toggleClass('completed-task-strikethrough', response.completed);
           },
           error: function (xhr, status, error) {
             console.error('Error toggling task completion:', error);

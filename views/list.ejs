@@ -2,6 +2,7 @@
 <html lang="en">
 
   <head>
+    <%- include('common_head.ejs') %>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -30,7 +31,7 @@
             </select>
           </div>
           <div>
-            <a href="/pagination" class="btn btn-secondary">Pagination View</a>
+            <a href="/pagination" class="btn btn-outline-info">Pagination View</a>
           </div>
         </div>
     
@@ -45,27 +46,21 @@
     <div class="container mt-2">
       <div class="row">
         <% for (var i=0; i < posts.length; i++){ %>
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <!-- Task -->
-              <h4 class="card-title"><%= posts[i].title %></h4>
-              <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
-
-              <!-- Buttons -->
-              <div>
-                <% if (posts[i].completed) { %>
-                <button class="btn btn-success complete" data-id="<%= posts[i]._id %>">Complete</button>
-                <% } else { %>
-                <button class="btn btn-primary complete" data-id="<%= posts[i]._id %>">Incomplete</button>
-                <% } %>
-                <button class="btn btn-secondary edit" data-id="<%= posts[i]._id %>">Edit</button>
-                <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">Delete</button>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title <%= posts[i].completed ? 'text-strike' : '' %>"><%= posts[i].title %></h4>
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
+                <!-- Buttons -->
+                <div>
+                  <button class="btn <%= posts[i].completed ? 'btn-outline-success' : 'btn-outline-primary' %> complete" data-id="<%= posts[i]._id %>" data-completed="<%= posts[i].completed %>"><%= posts[i].completed ? 'Complete' : 'Incomplete' %></button>
+                  <button class="btn btn-outline-secondary edit" data-id="<%= posts[i]._id %>">Edit</button>
+                  <button class="btn btn-outline-danger delete" data-id="<%= posts[i]._id %>">Delete</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <% } %>
+          <% } %>
       </div>
     </div>
 
@@ -75,17 +70,18 @@
       $(document).ready(function () {
         $('.complete').click(function (e) {
           e.preventDefault();
-          console.log('complete clicked');
           const button = $(this);
           const postId = button.data('id');
+          const isCompleted = button.data('completed');
           $.ajax({
             method: 'POST',
             url: '/complete',
             data: { postId: postId },
             success: function (response) {
-              console.log('Task completion toggled successfully');
+              button.data('completed', response.completed); 
               button.text(response.completed ? 'Complete' : 'Incomplete');
-              button.removeClass('btn-primary btn-success').addClass(response.completed ? 'btn-success' : 'btn-primary');
+              button.closest('.card-body').find('.card-title').toggleClass('text-strike', response.completed);
+              button.toggleClass('btn-outline-success', response.completed).toggleClass('btn-outline-primary', !response.completed);
             },
             error: function (xhr, status, error) {
               console.error('Error toggling task completion:', error);
