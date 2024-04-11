@@ -86,7 +86,6 @@ class TodoApp {
   }
   
   async runEditIdGet(req, resp) {
-    // DEBUG
     console.log("runEditIdGet")
     console.log(req.params)
     try {
@@ -106,6 +105,7 @@ class TodoApp {
         resp.status(500).render('error.ejs', {error: error.message});
     }
   }
+
   async runEditPut(req, resp) {
     // DEBUG
     let id = parseInt(req.body._id);
@@ -154,15 +154,44 @@ async runJsonGet(req, resp) {
       }
       console.log(JSON.stringify(fulldocument));
       resp.render('jsonlist.ejs', {fulldocument});
-    }
-    else {
+    }else {
       resp.status(302).redirect('/');
-  }
-  }
-  catch (error){
-    console.log(error)
-    resp.status(500).render('error.ejs', {error: error.message});
     }
+    }
+    catch (error){
+      console.log(error)
+      resp.status(500).render('error.ejs', {error: error.message});
+    }
+  }
+
+  async runListFilter(req, resp) {
+    try {
+      //add check to see what drop down the user selected
+      let q;
+      if (req.body.filterBy == 'title') {
+        q = {title : req.body.filter};
+      }
+      else if (req.body.filterBy == 'date') {
+        q = {date : req.body.filter};
+      }
+      else if (req.body.filterBy == '-filter type-') {
+        q = {};
+      }
+      else if (req.body.filterBy == 'all') {
+        q = {};
+      }
+
+      let res = await util.read(this.uri, this.database, this.posts, q) 
+      if (res.length == 0) {
+        resp.redirect('/list');
+      } else {
+        const query = { posts: res };
+        resp.render('list.ejs', query)
+      }   
+    } catch (e) {
+      console.error(e);
+      resp.status(500).send({ error: `Error from runListFilter: ${e.message}` })
+    } 
   }
 
   async runCalendarGet(req, res){
@@ -174,6 +203,46 @@ async runJsonGet(req, resp) {
       console.error(e);
     }
   }
+
+  async updateCompletionStatus(req, resp) {
+    let id = parseInt(req.body.postId);
+    let post = await util.read(this.uri, this.database, this.posts, { _id: id });
+
+    if (!post || post.length === 0) {
+      throw new Error(`Post with ID ${id} not found.`);
+    }
+
+    let currentCompletionStatus = post[0].completed;
+    let newCompletionStatus = !currentCompletionStatus;
+
+    let query = { _id: id };
+    let update = { $set: { completed: newCompletionStatus } };
+
+    try {
+        let res = await util.update(this.uri, this.database, this.posts, query, update);
+        console.log(`Completion status toggled for ID: ${id}. New status: ${newCompletionStatus}`);
+        resp.json({ completed: newCompletionStatus });
+    } catch (error) {
+        console.error(error);
+        throw new Error(`Error updating completion status: ${error.message}`);
+    }
+  }
+
+  async getTasksWithPagination(req, resp) {
+    let { page, pageSize } = req.query;
+    try {
+      page = parseInt(page, 10) || 1;
+      pageSize = parseInt(pageSize, 10) || 6; // adjust tasks per page (6)
+      const skip = (page - 1) * pageSize;
+      const posts = await util.read(this.uri, this.database, this.posts, {}, { limit: pageSize, skip });
+      const totalPosts = await util.count(this.uri, this.database, this.posts, {});
+      resp.render('pagination.ejs', { posts, totalPosts, page, pageSize });
+    } catch (error) {
+      console.error(error);
+      resp.status(500).json({ success: false, error: 'Error in utility' });
+    }
+  }
+
 }
 
 module.exports.TodoApp = TodoApp;
