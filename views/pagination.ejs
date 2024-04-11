@@ -17,30 +17,17 @@
   <%- include('nav.ejs') %>
 
   <div class="container-xl mt-3">
-    <form action="/filter" method="POST">
-      <!-- Filter Type & Toggle View -->
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="mr-auto">
-          <label for="filterBy" class="mr-2">Choose Filter Type:</label>
-          <select name="filterBy" id="filterBy" class="form-control">
-            <option value="type">-filter type-</option>
-            <option value="all">All</option>
-            <option value="title">Title</option>
-            <option value="date">Date</option>
-          </select>
-        </div>
-        <div>
-          <a href="/list" class="btn btn-secondary">Toggle View</a>
-        </div>
+    <!-- Filter Type & Toggle View -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="mr-auto">
+      </div><!--get rid for it to align to left side-->
+      <div>
+        <a href="/list" class="btn btn-secondary">List View</a>
       </div>
-  
-      <!-- Search Input & Filter Button -->
-      <div class="d-flex mb-3">
-        <input type="text" class="form-control mr-2" placeholder="Search.." name="filter">
-        <button type="submit" class="btn btn-primary">Filter</button>
-      </div>
-    </form>
+    </div>
   </div>
+
+
 
   <div class="container mt-2">
     <div class="row">
