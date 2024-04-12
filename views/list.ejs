@@ -9,6 +9,23 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
     <title>Document</title>
   </head>
+
+<style>
+    .icon {
+  width: 64px; /* adjust size as needed */
+  height: 64px; /* adjust size as needed */
+  border: 2px solid black; /* border style */
+  border-radius: 50%; /* makes it circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon span {
+  font-size: 24px; /* adjust font size as needed */
+  font-weight: bold; /* adjust font weight as needed */
+}
+</style>
   <body>
     <%- include('nav.ejs') %>
 
@@ -45,8 +62,20 @@
           <div class="card">
             <div class="card-body">
               <!-- Task -->
+              <% if (posts[i].priority === "high") { %>
+                <h4 class="card-title">
+                 <span style="color:red"><b> !!! </b></span> <%= posts[i].title %></h4>
+              <% } else if (posts[i].priority === "medium") { %>  
+              <h4 class="card-title">
+                <span style="color:orange"><b> !! </b></span> <%= posts[i].title %></h4>
+              <% } else if (posts[i].priority === "low") { %>
+              <h4 class="card-title">
+                <span style="color:blue"><b> ! </b></span><%= posts[i].title %></h4>
+              <% } else { %> 
               <h4 class="card-title"><%= posts[i].title %></h4>
+              <% } %>
               <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
+              <!-- <p class="card-text">Priority: <span style="color:red"><%=posts[i].priority %></span></p> -->
               <!-- Buttons -->
               <div>
                 <% if (posts[i].completed) { %>

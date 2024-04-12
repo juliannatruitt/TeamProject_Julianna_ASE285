@@ -64,6 +64,12 @@
                 let_lastday_of_current_month = new Date(year, current_month+1, 0);
                 weekday_of_firstday = let_firstday_of_current_month.getDay();
 
+                let priorities = {
+                    "high": `<div><span style="color:red"><b> !!! </b></span>`,
+                    "medium": `<div><span style="color:orange"><b> !! </b></span>`,
+                    "low": `<div><span style="color:blue"><b> ! </b></span>`,
+                };
+
                 let tasksFromTheDatabase = JSON.parse('<%- JSON.stringify(allTasks) %>');
                 
     
@@ -79,7 +85,12 @@
                                     for (let task=0; task<tasksFromTheDatabase.length; task++){
                                         let date = new Date(tasksFromTheDatabase[task].date);
                                         if ((date.getUTCMonth() === current_month) && (date.getUTCFullYear() === year) && (date.getUTCDate() === countingdays)){
-                                            html += `<div>${tasksFromTheDatabase[task].title}</div>`;
+                                            if (priorities[tasksFromTheDatabase[task].priority] != ("none" && undefined)){
+                                                html += priorities[tasksFromTheDatabase[task].priority];
+                                            } else{
+                                                html += `<div>`;
+                                            }
+                                            html += `${tasksFromTheDatabase[task].title}</div>`;
                                         }
                                     }
                                     html += `</td>`;
@@ -95,7 +106,12 @@
                                 for (let task=0; task<tasksFromTheDatabase.length; task++){
                                     let date = new Date(tasksFromTheDatabase[task].date);
                                     if ((date.getUTCMonth() === current_month) && (date.getUTCFullYear() === year) && (date.getUTCDate() === countingdays)){
-                                        html += `<div>${tasksFromTheDatabase[task].title}</div>`;
+                                        if (priorities[tasksFromTheDatabase[task].priority] != ("none" && undefined)){
+                                            html += priorities[tasksFromTheDatabase[task].priority];
+                                        } else{
+                                            html += `<div>`;
+                                        }
+                                        html += `${tasksFromTheDatabase[task].title}</div>`;
                                     }
                                 }
                                 html += `</td>`;
