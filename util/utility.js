@@ -232,16 +232,22 @@ async runJsonGet(req, resp) {
     let { page, pageSize } = req.query;
     try {
       page = parseInt(page, 10) || 1;
-      pageSize = parseInt(pageSize, 10) || 6; // adjust tasks per page (6)
+      pageSize = parseInt(pageSize, 10) || 6;
       const skip = (page - 1) * pageSize;
-      const posts = await util.read(this.uri, this.database, this.posts, {}, { limit: pageSize, skip });
-      const totalPosts = await util.count(this.uri, this.database, this.posts, {});
-      resp.render('pagination.ejs', { posts, totalPosts, page, pageSize });
+      const posts = await util.read(this.uri, this.database, this.posts, {}, { limit: pageSize, skip }) || [];
+      const totalPosts = await util.count(this.uri, this.database, this.posts, {}) || 0;
+  
+      if (req.accepts('html')) {
+        resp.render('pagination.ejs', { posts, totalPosts, page, pageSize });
+      } else {
+        resp.json({ posts, totalPosts, page, pageSize });
+      }
     } catch (error) {
       console.error(error);
       resp.status(500).json({ success: false, error: 'Error in utility' });
     }
   }
+  
 
 }
 

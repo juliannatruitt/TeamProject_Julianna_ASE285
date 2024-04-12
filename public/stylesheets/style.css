@@ -5,10 +5,12 @@
     }
     body {
     background: #e27442;
-    background-color: #c5fff5;
+    /*background-image: linear-gradient(#C5FFF5,#99C3BC,#99C3BC, #C5FFF5);*/
+    /*background-image: linear-gradient(to right,#C5FFF5,#99C3BC,#99C3BC, #C5FFF5);*/
+    background-image: linear-gradient(to right,#b9fcf1,#addbd4);
     }
     .todo-container {
-    color: #c5fff5;
+    color: white;
     position: absolute;
     top:50%;
     left: 50%;
