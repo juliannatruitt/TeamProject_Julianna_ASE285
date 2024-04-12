@@ -244,7 +244,7 @@ async runJsonGet(req, resp) {
       }
     } catch (error) {
       console.error(error);
-      resp.status(500).json({ success: false, error: 'Error in utility' });
+      resp.status(500).json({ success: false, error: 'Error in utility - pagination' });
     }
   }
   
