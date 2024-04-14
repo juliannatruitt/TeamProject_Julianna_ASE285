@@ -1,58 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <title>Tasks - List</title>
+    <%- include('common_head.ejs') %>
+  </head>
+  <body>
+    <%- include('nav.ejs') %>
 
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <div class="container-xl mt-3">
+      <form action="/filter" method="POST">
+        <!-- Filter Type & Toggle View -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="mr-auto">
+            <label for="filterBy" class="mr-2">Choose Filter Type:</label>
+            <select name="filterBy" id="filterBy" class="form-control">
+              <option value="type">-filter type-</option>
+              <option value="all">All</option>
+              <option value="title">Title</option>
+              <option value="date">Date</option>
+            </select>
+          </div>
+          <div>
+            <a href="/pagination" class="btn btn-secondary">Pagination View</a>
+          </div>
+        </div>
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+        <!-- Search Input & Filter Button -->
+        <div class="d-flex mb-3">
+          <input type="text" class="form-control mr-2" placeholder="Search.." name="filter">
+          <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+      </form>
+    </div>
 
-  <title>Document</title>
-</head>
-
-<body>
-  <%- include('nav.ejs') %>
-
-    <ul class="list-group">
-      <% for (var i=0; i < posts.length; i++){ %>
-        <li class="list-group-item">
-          <h4> Title : <%= posts[i].title %>
-          </h4>
-          <p> Date : <%= posts[i].date %>
-          </p>
-          <button class="delete" data-id="<%= posts[i]._id %>">Delete</button>
-        </li>
+    <div class="container mt-2">
+      <div class="row">
+        <% for (var i=0; i < posts.length; i++){ %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <!-- Task -->
+              <h4 class="card-title"><%= posts[i].title %></h4>
+              <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
+              <!-- Buttons -->
+              <div>
+                <% if (posts[i].completed) { %>
+                <button class="btn btn-success complete" data-id="<%= posts[i]._id %>">Complete</button>
+                <% } else { %>
+                <button class="btn btn-primary complete" data-id="<%= posts[i]._id %>">Incomplete</button>
+                <% } %>
+                <button class="btn btn-secondary edit" data-id="<%= posts[i]._id %>">Edit</button>
+                <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <% } %>
-    </ul>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
-      $('.delete').click(function (e) {
-        $.ajax({
-          method: 'DELETE',
-          url: '/delete',
-          // dataset.id is from: data-id= posts[i]._id 
-          data: { _id: e.target.dataset.id }
-        }).done((res) => {  // we need this form to use $this 
-          $(this).parent('li').fadeOut();
-          console.log('killed')
-        }).fail((xhr, code, err) => {
-          // failure
+      $(document).ready(function () {
+        $('.complete').click(function (e) {
+          e.preventDefault();
+          console.log('complete clicked');
+          const button = $(this);
+          const postId = button.data('id');
+          $.ajax({
+            method: 'POST',
+            url: '/complete',
+            data: { postId: postId },
+            success: function (response) {
+              console.log('Task completion toggled successfully');
+              button.text(response.completed ? 'Complete' : 'Incomplete');
+              button.removeClass('btn-primary btn-success').addClass(response.completed ? 'btn-success' : 'btn-primary');
+            },
+            error: function (xhr, status, error) {
+              console.error('Error toggling task completion:', error);
+            }
+          });
+        });
+        $('.edit').click(function (e) {
+          e.preventDefault();
+          const postId = $(this).data('id');
+          console.log('edit pressed')
+          window.location.href = '/edit/' + postId;
+        });
+        $('.delete').click(function (e) {
+          $.ajax({
+            method: 'DELETE',
+            url: '/delete',
+            data: { _id: e.target.dataset.id }
+          }).done((res) => {
+            $(this).closest('.col-md-4').fadeOut();
+            console.log('killed')
+          }).fail((xhr, code, err) => {
+          });
         });
       });
     </script>
-
+    <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
       integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
       crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"></script>
-</body>
-
+  </body>
 </html>
+

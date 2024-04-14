@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('common_head.ejs') %>
+  <title>Tasks - Pagination</title>
+</head>
+
+<body>
+  <%- include('nav.ejs') %>
+
+  <div class="container-xl mt-3">
+    <!-- Filter Type & Toggle View -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="mr-auto">
+      </div><!--get rid for it to align to left side-->
+      <div>
+        <a href="/list" class="btn btn-secondary">List View</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-2">
+    <div class="row">
+      <% var startIdx = (page - 1) * 6; %>
+      <% for (var i=startIdx; i < Math.min(startIdx + 6, posts.length); i++){ %>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <!-- Task -->
+            <h4 class="card-title task-title"><%= posts[i].title %></h4>
+            <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
+            <!-- Buttons -->
+            <div>
+              <% if (posts[i].completed) { %>
+              <button class="btn btn-success complete" data-id="<%= posts[i]._id %>">Complete</button>
+              <% } else { %>
+              <button class="btn btn-primary complete" data-id="<%= posts[i]._id %>">Incomplete</button>
+              <% } %>
+              <button class="btn btn-secondary edit" data-id="<%= posts[i]._id %>">Edit</button>
+              <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center mt-3">
+      <% if (page > 1) { %>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%= page - 1 %>&pageSize=<%= pageSize %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      <% } %>
+      <% for (let i = 1; i <= Math.ceil(totalPosts / 6); i++) { %>
+      <li class="page-item <%= i === page ? 'active' : '' %>">
+        <a class="page-link" href="?page=<%= i %>&pageSize=<%= pageSize %>"><%= i %></a>
+      </li>
+      <% } %>
+      <% if (page < Math.ceil(totalPosts / 6)) { %>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%= page + 1 %>&pageSize=<%= pageSize %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <% } %>
+    </ul>
+  </nav>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('.complete').click(function (e) {
+        e.preventDefault();
+        console.log('complete clicked');
+        const button = $(this);
+        const postId = button.data('id');
+        $.ajax({
+          method: 'POST',
+          url: '/complete',
+          data: { postId: postId },
+          success: function (response) {
+            console.log('Task completion toggled successfully');
+            button.text(response.completed ? 'Complete' : 'Incomplete');
+            button.removeClass('btn-outline-primary btn-outline-success').addClass(response.completed ? 'btn-outline-success' : 'btn-outline-primary');
+            button.closest('.card-body').find('.task-title').toggleClass('completed-task-strikethrough', response.completed);
+          },
+          error: function (xhr, status, error) {
+            console.error('Error toggling task completion:', error);
+          }
+        });
+      });
+
+      $('.edit').click(function (e) {
+        e.preventDefault();
+        const postId = $(this).data('id');
+        console.log('edit pressed')
+        window.location.href = '/edit/' + postId;
+      });
+
+      $('.delete').click(function (e) {
+        $.ajax({
+          method: 'DELETE',
+          url: '/delete',
+          data: { _id: e.target.dataset.id }
+        }).done((res) => {
+          $(this).closest('.col-md-4').fadeOut();
+          console.log('killed')
+        }).fail((xhr, code, err) => {
+        });
+      });
+
+    });
+  </script>
+
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

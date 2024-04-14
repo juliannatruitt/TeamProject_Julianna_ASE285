@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('common_head.ejs') %>
+    <title>Calander</title>
+</head>
+
+<body>
+    <%- include('nav.ejs') %>
+      
+    <div class="container text-center">
+        <h1 id="go_back_month"><svg class="switch-months-btn" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+          </svg></h1>
+        <h1 id="month"></h1>
+        <h1 id="year"></h1> 
+        <h1 id="go_forward_month"><svg class="switch-months-btn" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+            </svg>
+        </h1>
+
+        <table style="width:100%" id="calander">
+        </table>
+    </div>
+    
+  
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+        <script>
+            let current_date = new Date();
+            let current_month = current_date.getUTCMonth();
+            let year = current_date.getUTCFullYear();
+    
+            function display_calander(date_month_number, thisyear){
+                current_month = date_month_number;
+                year = thisyear;
+
+                const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                let_firstday_of_current_month = new Date(year, current_month, 1);
+                let_lastday_of_current_month = new Date(year, current_month+1, 0);
+                weekday_of_firstday = let_firstday_of_current_month.getDay();
+
+                let tasksFromTheDatabase = JSON.parse('<%- JSON.stringify(allTasks) %>');
+                
+    
+                let countingdays=1; 
+                for (let i=0; i<6; i++){
+                    let html = `<tr>`
+                    setdate=false;
+                    for (let k=0; k < 7; k++){
+                        if (countingdays <= let_lastday_of_current_month.getDate()){ 
+                            if (i===0 && !setdate){
+                                if (weekday_of_firstday === k){
+                                    html += `<td class="date-cell"><p>${countingdays}</p>`;
+                                    for (let task=0; task<tasksFromTheDatabase.length; task++){
+                                        let date = new Date(tasksFromTheDatabase[task].date);
+                                        if ((date.getUTCMonth() === current_month) && (date.getUTCFullYear() === year) && (date.getUTCDate() === countingdays)){
+                                            html += `<div>${tasksFromTheDatabase[task].title}</div>`;
+                                        }
+                                    }
+                                    html += `</td>`;
+                                    countingdays++;
+                                    setdate=true;
+                                }
+                                else{
+                                    html += `<td class="date-cell"></td>`;
+                                }
+                            }
+                            else{
+                                html += `<td class="date-cell"><p>${countingdays}</p>`;
+                                for (let task=0; task<tasksFromTheDatabase.length; task++){
+                                    let date = new Date(tasksFromTheDatabase[task].date);
+                                    if ((date.getUTCMonth() === current_month) && (date.getUTCFullYear() === year) && (date.getUTCDate() === countingdays)){
+                                        html += `<div>${tasksFromTheDatabase[task].title}</div>`;
+                                    }
+                                }
+                                html += `</td>`;
+                                countingdays++;
+                            }
+                        }
+                        else{
+                            html += `<td class="date-cell"></td>`;
+                        }
+                    }
+                    html += `</tr>`
+                    $('#calander').append(html);
+                }
+                $('#year').empty();
+                $('#month').empty();
+                $('#year').append(year);
+                $('#month').append(monthNames[current_month]);
+            }
+
+            function displayDaysOfTheWeek(){
+                const daysOfTheWeek = [
+                'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                'Saturday'];
+
+                let html = `<tr>`;
+                for(let i=0; i<7; i++){
+                    html +=  `<td class="day-name-cell">${daysOfTheWeek[i]}</td>`;
+                }
+                html += '</tr>'
+                $('#calander').append(html);
+            }
+
+            displayDaysOfTheWeek();
+            display_calander(current_month, year);
+    
+            $(()=> {
+                $(document).on('click', "#go_back_month", function (){
+                    $('#calander').empty();
+                    if (current_month-1 < 0){
+                        current_month=12;
+                        year=year-1;
+                    }
+                    current_month=current_month-1
+                    displayDaysOfTheWeek();
+                    display_calander(current_month,year);
+                })
+    
+                $(document).on('click', "#go_forward_month", function (){
+                    $('#calander').empty();
+                    if (current_month+1 > 11){
+                        current_month=0;
+                        year=year+1;
+                    }
+                    else{
+                        current_month=current_month+1
+                    }
+                    displayDaysOfTheWeek();
+                    display_calander(current_month,year);
+                })
+            });
+          </script>
+</body>
+  
+</html>

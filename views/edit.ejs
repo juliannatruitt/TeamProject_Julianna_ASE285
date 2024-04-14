@@ -2,15 +2,8 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
-
-  <title>Document</title>
+  <%- include('common_head.ejs') %>
+  <title>Edit</title>
 </head>
 
 <body>
@@ -24,14 +17,17 @@
           <label>ID</label>
                 <input type="text" class="form-control" value="<%= data[0]._id %>" readonly>
             </div>
-          <label>Update: What to do today</label>
+            
+          <label>Update: Task</label>
           <input type="text" class="form-control" name="title" value=<%=data[0].title %> />
+
+          <div class="form-group">
+            <label>Update: Date</label>
+            <input type="text" class="form-control" name="date" value=<%=data[0].date %>  placeholder="YYYY-MM-DD format" />
+          </div>
+          <button type="submit" class="btn btn-outline-secondary">Submit</button>
         </div>
-        <div class="form-group">
-          <label>Update: Date</label>
-          <input type="text" class="form-control" name="date" value=<%=data[0].date %> />
-        </div>
-        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+        
       </form>
     </div>
 

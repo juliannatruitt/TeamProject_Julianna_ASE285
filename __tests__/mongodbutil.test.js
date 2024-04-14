@@ -1,5 +1,5 @@
 const { MongoClient, deserialize } = require("mongodb");
-const { connect, create, read, update, delete_document } = require("../util/mongodbutil");
+const { connect, create, read, update, delete_document, count } = require("../util/mongodbutil");
 
 // Mocking the MongoClient
 jest.mock("mongodb");
@@ -18,6 +18,7 @@ describe("MongoDB Functions", () => {
             toArray: jest.fn(),
             updateOne: jest.fn(),
             deleteOne: jest.fn(),
+            countDocuments: jest.fn()
         };
         MongoClient.mockReturnValue(mockClient)
     });
@@ -97,5 +98,21 @@ describe("MongoDB Functions", () => {
         expect(result).toEqual(object);
     })
   })
+
+  // Test for count
+  describe("count", () => {
+    test("should count documents in a collection based on query", async () => {
+      const query = { age: { $gte: 25 } };
+      const expectedCount = 2;
+      mockClient.db().collection().countDocuments.mockReturnValueOnce(expectedCount);
+
+      const result = await count("mongodb://localhost:27017", "testDB", "testCollection", query);
+      expect(mockClient.db).toHaveBeenCalledWith("testDB");
+      expect(mockClient.db().collection).toHaveBeenCalledWith("testCollection");
+      expect(mockClient.db().collection().countDocuments).toHaveBeenCalledWith(query);
+      expect(mockClient.close).toHaveBeenCalled();
+      expect(result).toBe(expectedCount);
+    });
+  });
 
 })
