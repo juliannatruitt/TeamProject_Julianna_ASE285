@@ -30,7 +30,8 @@ app.listen(5500, function () {
 
 app.get('/', async function(req, resp) { 
   try {
-      await resp.render('write.ejs')
+    const tasks = await util.read(URI, DATABASE, POSTS, {});
+    await resp.render('write.ejs', { posts: tasks })
   } catch (e) {
       console.error(e);
   } 

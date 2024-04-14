@@ -27,7 +27,7 @@ class TodoApp {
       //given that the user enter date in YYYY-MM-DD format!!
       let stored_date = new Date(req.body.date);
 
-      query = { _id : latestIdNumber + 1, title : req.body.title, date : stored_date, priority : req.body.priority};
+      query = { _id : latestIdNumber + 1, title : req.body.title, date : stored_date, priority : req.body.priority, tag : req.body.tag};
       res = await util.create(this.uri, this.database, this.posts, query);
       let newTotal = await util.read(this.uri, this.database, this.posts, {});
       

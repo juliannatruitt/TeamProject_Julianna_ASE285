@@ -57,8 +57,7 @@
               <% } else { %> 
               <h4 class="card-title"><%= posts[i].title %></h4>
               <% } %>
-              <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
-              <!-- <p class="card-text">Priority: <span style="color:red"><%=posts[i].priority %></span></p> -->
+              <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %></p>
               <!-- Buttons -->
               <div>
                 <% if (posts[i].completed) { %>
