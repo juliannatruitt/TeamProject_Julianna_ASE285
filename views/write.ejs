@@ -99,7 +99,7 @@
         $(document).on('click', '#saveChanges', (event) =>{
           event.preventDefault();
           let newTag = $('#newTagInput').val();
-          let newOption = `<option value="${newTag}">${newTag}</option>`;
+          let newOption = `<option value="${newTag}" selected>${newTag}</option>`;
           $('#tag').append(newOption);
           $('#newTagInput').val('');
           $('#newTagModal').modal('hide')
