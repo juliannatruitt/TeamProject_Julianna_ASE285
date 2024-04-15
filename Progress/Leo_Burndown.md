@@ -1,4 +1,4 @@
 #Progress:
-0% burndown
+25% burndown
 38 LoC
 0 tests

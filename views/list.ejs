@@ -32,8 +32,12 @@
         <li class="list-group-item">
           <h4> Title : <%= posts[i].title %>
           </h4>
-          <p> Date : <%= posts[i].date %>
-          </p>
+          <% var today = new Date(); %>
+          <% if (posts[i].date < today){ %>
+          <p style="color: red;"><s style="color: red;"> Date : <%= posts[i].date %></s></p>
+          <% }else { %>
+          <p> Date : <%= posts[i].date %></p>
+          <% } %>
           <button class="delete" data-id="<%= posts[i]._id %>">Delete</button>
         </li>
         <% } %>

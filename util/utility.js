@@ -53,15 +53,17 @@ class TodoApp {
 
   async runListFilter(req, resp) {
     try {
-      //add check to see what drop down the user selected
       let q;
       if (req.body.filterBy == 'title') {
         q = {title : req.body.filter};
       }
       else if (req.body.filterBy == 'date') {
-        q = {date : req.body.filter};
+        //convert string to date, look at julianna's code (calendar and utility code)
+        d = new Date(req.body.filter);
+        q = {date : d};
       }
-      else if (req.body.filterBy == '-filter type-') {
+      else if (req.body.filterBy == 'type') {
+        //make an alert of some sort on the page
         q = {};
       }
       else if (req.body.filterBy == 'all') {
