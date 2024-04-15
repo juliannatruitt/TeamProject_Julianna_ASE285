@@ -29,7 +29,7 @@
           <div class="card-body">
             <!-- Task -->
             <h4 class="card-title task-title"><%= posts[i].title %></h4>
-            <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString() %></p>
+            <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %></p>
             <!-- Buttons -->
             <div>
               <% if (posts[i].completed) { %>
