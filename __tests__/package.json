@@ -1,0 +1,11 @@
+{
+    "scripts": {
+        "test": "jest"
+    },
+    "dependencies": {
+        "jest": "^29.7.0",
+        "jsdom": "^24.0.0",
+        "puppeteer": "^22.6.1",
+        "supertest": "^6.3.4"
+    }
+}
