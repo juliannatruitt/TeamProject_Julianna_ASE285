@@ -6,6 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+  <link rel="stylesheet" href="../public/stylesheets/style.css"/>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
@@ -16,20 +17,65 @@
 <body>
   <%- include('nav.ejs') %>
 
-    <h4 class="container mt-4"><strong>Write Page</strong></h4>
+    <h4 class="container mt-4"><strong>ToDo</strong></h4>
 
     <div class="container mt-3">
       <form action="/add" method="POST">
         <div class="form-group">
-          <label>What to do today</label>
+          <label>Task</label>
           <input type="text" class="form-control" name="title" />
         </div>
         <div class="form-group">
           <label>Date</label>
-          <input type="text" class="form-control" name="date" />
+          <input type="text" class="form-control" name="date" placeholder="YYYY-MM-DD format"/>
+        </div>
+        <div class="form-group">
+          <label>Priority Level:</label>
+          <select name="priority" id="priority">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="none" selected>None</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tag/Category:</label>
+          <% 
+          let allTags = new Set();
+          for (var i=0; i < posts.length; i++){
+            if (posts[i].tag){
+              allTags.add(posts[i].tag)
+            } 
+          } 
+          %>
+          <select name="tag" id="tag">
+            <% Array.from(allTags).forEach(tag => { %>
+              <option value="<%= tag %>"><%= tag %></option>
+            <% }); %>
+          </select>
+          <button id="gotoNewTagModal">add new tag</button>
         </div>
         <button type="submit" class="btn btn-outline-secondary">Submit</button>
       </form>
+    </div>
+    <div class="modal" id="newTagModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Tag:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="newTagInput" placeholder="Enter new tag/category">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -43,6 +89,24 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"></script>
+    <script>
+      $(() => {
+
+
+        $(document).on('click', '#gotoNewTagModal', (event) =>{
+          event.preventDefault();
+          $('#newTagModal').modal('show');
+        });
+        $(document).on('click', '#saveChanges', (event) =>{
+          event.preventDefault();
+          let newTag = $('#newTagInput').val();
+          let newOption = `<option value="${newTag}" selected>${newTag}</option>`;
+          $('#tag').append(newOption);
+          $('#newTagInput').val('');
+          $('#newTagModal').modal('hide')
+        });
+      });
+    </script>
 </body>
 
 </html>

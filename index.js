@@ -1,12 +1,32 @@
 // npm install -g nodemon
+// npm install mongodb
 
 // npm install .
 // nodemon ./index.js
 // Access this server with http://localhost:5500
 
-const {URI} = require('./util/_config.js');
 const { TodoApp } = require('./util/utility.js');
 const util = require('./util/mongodbutil.js');
+
+require('dotenv').config();
+const { MongoClient } = require('mongodb');
+const uri = process.env.MONGODB_URI;
+const URI = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Connect to MongoDB
+async function connectToMongoDB() {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        
+        // Your code to interact with MongoDB goes here
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+    }
+}
+
+connectToMongoDB();
 
 const DATABASE = 'todoapp';
 const POSTS = 'posts';
@@ -30,7 +50,8 @@ app.listen(5500, function () {
 
 app.get('/', async function(req, resp) { 
   try {
-      await resp.render('write.ejs')
+    const tasks = await util.read(URI, DATABASE, POSTS, {});
+    await resp.render('write.ejs', { posts: tasks })
   } catch (e) {
       console.error(e);
   } 
@@ -44,9 +65,31 @@ app.get('/', async function(req, resp) {
   } 
 });
   
-app.get('/list', async function(req, resp){
+app.get('/list', async function(req, res) {
   try {
-    await postapp.runListGet(req, resp);
+    const tasks = await util.read(URI, DATABASE, POSTS, {});
+    res.render('list.ejs', { posts: tasks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: `Error fetching tasks: ${error.message}` });
+  }
+});
+
+
+app.get('/list', async function(req, res) {
+  try {
+    const tasks = await util.read(URI, DATABASE, POSTS, {});
+    res.render('list.ejs', { posts: tasks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: `Error fetching tasks: ${error.message}` });
+  }
+});
+
+app.post('/filter', async function(req, resp){
+  try {
+    await postapp.runListFilter(req, resp);
+    await postapp.runListFilter(req, resp);
   } catch (e) {
     console.error(e);
   }   
@@ -91,12 +134,11 @@ app.put('/edit', async function (req, resp) {
     console.error(e);
   }     
 });
-// Define a route handler for GET requests to '/posts'
+
+
 app.get('/posts', async (req, res) => {
   try {
-      // Call runListGet to retrieve all post
       const posts =  await util.read(URI, DATABASE, POSTS, {}) 
-      // Respond with updated posts array
       res.json(posts);
   } catch (error) {
       console.error(error);
@@ -104,5 +146,31 @@ app.get('/posts', async (req, res) => {
   }
 });
 
-module.exports = app;
+app.get('/calendar', async function (req, res){
+  try{
+    await postapp.runCalendarGet(req, res);
+  }
+  catch (e){
+    console.error(e);
+  }
+})
 
+app.post('/complete', async (req, res) => {
+  try {
+    const postID = req.body.postID;
+    console.log('ID:', postID)
+    await postapp.updateCompletionStatus(req, res);
+  } catch (error) {
+    console.error('Error completing task:', error);
+  }
+});
+
+app.get('/pagination', async function(req, res) {
+  try {
+    await postapp.getTasksWithPagination(req, res);
+  } catch (error) {
+    console.error('Error getting paginated tasks:', error);
+  }
+});
+
+module.exports = app;
