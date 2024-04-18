@@ -11,24 +11,10 @@ const util = require('./util/mongodbutil.js');
 
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
-const uri = process.env.MONGODB_URI;
-const URI = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const URI = process.env.MONGODB_URI;
 
-// Connect to MongoDB
-async function connectToMongoDB() {
-    try {
-        await client.connect();
-        console.log("Connected to MongoDB");
-        
-        // Your code to interact with MongoDB goes here
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-    }
-}
-
-connectToMongoDB();
-
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
 
 const DATABASE = 'todoapp';
 const POSTS = 'posts';
