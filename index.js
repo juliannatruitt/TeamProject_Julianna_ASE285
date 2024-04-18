@@ -1,12 +1,33 @@
 // npm install -g nodemon
+// npm install mongodb
 
 // npm install .
 // nodemon ./index.js
 // Access this server with http://localhost:5500
 
-const {URI} = require('./util/config.js');
+
 const { TodoApp } = require('./util/utility.js');
 const util = require('./util/mongodbutil.js');
+
+require('dotenv').config();
+const { MongoClient } = require('mongodb');
+const uri = process.env.MONGODB_URI;
+const URI = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Connect to MongoDB
+async function connectToMongoDB() {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        
+        // Your code to interact with MongoDB goes here
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+    }
+}
+
+connectToMongoDB();
 
 
 const DATABASE = 'todoapp';
@@ -56,7 +77,7 @@ app.get('/list', async function(req, res) {
   }
 });
 
-app.post('/filter', async function(req, resp){
+
 app.get('/list', async function(req, res) {
   try {
     const tasks = await util.read(URI, DATABASE, POSTS, {});
