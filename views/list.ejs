@@ -53,12 +53,15 @@
                 <% } else if (posts[i].priority === "medium") { %>  
                 <h4 class="card-title">
                   <span style="color:orange"><b> !! </b></span> <%= posts[i].title %></h4>
-                <% } else if (posts[i].priority === "low") { %>
+                <%  } else if (posts[i].priority === "low") { %>
                 <h4 class="card-title">
                   <span style="color:blue"><b> ! </b></span><%= posts[i].title %></h4>
                 <% } else { %> 
                 <h4 class="card-title"><%= posts[i].title %></h4>
                 <% } %>
+                <!-- Task Tag -->
+            <p class="card-text">Tag: <%= posts[i].tag %></p>
+            <!-- Due Date -->
                 <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %></p>
               <% }else { %>
                 <% if (posts[i].priority === "high") { %>
@@ -73,6 +76,9 @@
                 <% } else { %> 
                 <h4 class="card-title" style="color:red"><s style="color:red"> <%= posts[i].title %></s></h4>
                 <% } %>
+                <!-- Task Tag -->
+            <p class="card-text">Tag: <%= posts[i].tag %></p>
+            <!-- Due Date (Overdue) -->
                 <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %> (Overdue)</p>
               <% } %>
                 <!-- Buttons -->
