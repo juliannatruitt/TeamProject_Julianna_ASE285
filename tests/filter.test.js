@@ -1,4 +1,3 @@
-/*
 const { TodoApp } = require('../util/utility.js');
 const util = require('../util/mongodbutil.js');
 
@@ -23,5 +22,7 @@ describe('runListFilter', () => {
 
     });
 });
-*/
+
+
+//have a test for every if statement
 

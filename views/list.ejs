@@ -45,8 +45,8 @@
           <div class="card">
             <div class="card-body">
               <!-- Task -->
-              <% var today = new Date().toLocaleDateString('en-US', { timeZone: 'UTC' })); %>
-              <% if (new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' })) >= today){ %>
+              <% var today = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }); %>
+              <% if (new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) >= today){ %>
                 <% if (posts[i].priority === "high") { %>
                   <h4 class="card-title">
                   <span style="color:red"><b> !!! </b></span> <%= posts[i].title %></h4>
@@ -59,7 +59,7 @@
                 <% } else { %> 
                 <h4 class="card-title"><%= posts[i].title %></h4>
                 <% } %>
-                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %></p>
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %></p>
               <% }else { %>
                 <% if (posts[i].priority === "high") { %>
                   <h4 class="card-title" style="color:red">
@@ -73,7 +73,7 @@
                 <% } else { %> 
                 <h4 class="card-title" style="color:red"><s style="color:red"> <%= posts[i].title %></s></h4>
                 <% } %>
-                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %> (Overdue)</p>
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %> (Overdue)</p>
               <% } %>
                 <!-- Buttons -->
               <div>
