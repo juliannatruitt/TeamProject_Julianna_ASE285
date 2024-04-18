@@ -86,6 +86,7 @@
                                         let date = new Date(tasksFromTheDatabase[task].date);
                                         if ((date.getUTCMonth() === current_month) && (date.getUTCFullYear() === year) && (date.getUTCDate() === countingdays)){
                                             if (priorities[tasksFromTheDatabase[task].priority] != ("none" && undefined)){
+                                                //if is overdue, put strikethrough
                                                 html += priorities[tasksFromTheDatabase[task].priority];
                                             } else{
                                                 html += `<div>`;

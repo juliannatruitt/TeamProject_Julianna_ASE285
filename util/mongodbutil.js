@@ -53,6 +53,7 @@ async function read(uri, databaseName, collectionName, query) {
     const collection = client.db(databaseName).collection(collectionName);
     result = await collection.find(query).toArray();
     console.log(`read: Found ${result.length} documents from ${query} - ${result}`);
+    console.log(result);
   } catch (error) {
     console.error(error);
   } finally {
@@ -95,7 +96,6 @@ async function delete_document(uri, databaseName, collectionName, query) {
   }
   return result;
 }
-
 async function count(uri, databaseName, collectionName, query) {
   let client;
   let count;
@@ -112,8 +112,6 @@ async function count(uri, databaseName, collectionName, query) {
   }
   return count;
 }
-
-
 module.exports.connect = connect;
 module.exports.run = run;
 module.exports.create = create;

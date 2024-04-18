@@ -47,13 +47,45 @@ class TodoApp {
           resp.redirect('/');
         } else {
           const query = { posts: res };
-          resp.render('list.ejs', query);
+          resp.render('list.ejs', query)
         }   
       } catch (e) {
         console.error(e);
-        resp.status(500).render('error.ejs', {error: error.message});
+        resp.status(500).send({ error: `Error from runListGet: ${e.message}` })
       } 
   }
+
+  async runListFilter(req, resp) {
+    try {
+      let q;
+      if (req.body.filterBy == 'title') {
+        q = {title : req.body.filter};
+      }
+      else if (req.body.filterBy == 'date') {
+        //convert string to date, look at julianna's code (calendar and utility code)
+        d = new Date(req.body.filter);
+        q = {date : d};
+      }
+      else if (req.body.filterBy == 'type') {
+        //make an alert of some sort on the page
+        q = {};
+      }
+      else if (req.body.filterBy == 'all') {
+        q = {};
+      }
+
+      let res = await util.read(this.uri, this.database, this.posts, q) 
+      if (res.length == 0) {
+        resp.redirect('/list');
+      } else {
+        const query = { posts: res };
+        resp.render('list.ejs', query)
+      }   
+    } catch (e) {
+      console.error(e);
+      resp.status(500).send({ error: `Error from runListFilter: ${e.message}` })
+    } 
+}
   /*
     Warning: this code has a bug.
   
@@ -105,7 +137,6 @@ class TodoApp {
         resp.status(500).render('error.ejs', {error: error.message});
     }
   }
-
   async runEditPut(req, resp) {
     // DEBUG
     let id = parseInt(req.body._id);

@@ -5,7 +5,6 @@
 // nodemon ./index.js
 // Access this server with http://localhost:5500
 
-
 const { TodoApp } = require('./util/utility.js');
 const util = require('./util/mongodbutil.js');
 
@@ -83,7 +82,13 @@ app.post('/filter', async function(req, resp){
   }   
 });
 
-
+app.post('/filter', async function(req, resp){
+  try {
+    await postapp.runListFilter(req, resp);
+  } catch (e) {
+    console.error(e);
+  }   
+});
   
 app.delete('/delete', async function(req, resp){   
   try {

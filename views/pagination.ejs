@@ -28,8 +28,36 @@
         <div class="card">
           <div class="card-body">
             <!-- Task -->
-            <h4 class="card-title task-title"><%= posts[i].title %></h4>
-            <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %></p>
+            <% var today = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }); %>
+              <% if (new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) >= today){ %>
+                <% if (posts[i].priority === "high") { %>
+                  <h4 class="card-title">
+                  <span style="color:red"><b> !!! </b></span> <%= posts[i].title %></h4>
+                <% } else if (posts[i].priority === "medium") { %>  
+                <h4 class="card-title">
+                  <span style="color:orange"><b> !! </b></span> <%= posts[i].title %></h4>
+                <% } else if (posts[i].priority === "low") { %>
+                <h4 class="card-title">
+                  <span style="color:blue"><b> ! </b></span><%= posts[i].title %></h4>
+                <% } else { %> 
+                <h4 class="card-title"><%= posts[i].title %></h4>
+                <% } %>
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %></p>
+              <% }else { %>
+                <% if (posts[i].priority === "high") { %>
+                  <h4 class="card-title" style="color:red">
+                  <span style="color:red"><b> !!! </b></span><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } else if (posts[i].priority === "medium") { %>  
+                <h4 class="card-title" style="color:red">
+                  <span style="color:orange"><b> !! </b></span><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } else if (posts[i].priority === "low") { %>
+                <h4 class="card-title" style="color:red">
+                  <span style="color:blue"><b> ! </b></span><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } else { %> 
+                <h4 class="card-title" style="color:red"><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } %>
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %> (Overdue)</p>
+              <% } %>
             <!-- Buttons -->
             <div>
               <% if (posts[i].completed) { %>
