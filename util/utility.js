@@ -73,6 +73,9 @@ class TodoApp {
       else if (req.body.filterBy == 'all') {
         q = {};
       }
+      else if (req.body.filterBy == 'priority') {
+        q = {priority : req.body.filter };
+      }
 
       let res = await util.read(this.uri, this.database, this.posts, q) 
       if (res.length == 0) {
