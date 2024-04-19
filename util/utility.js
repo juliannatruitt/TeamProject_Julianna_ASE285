@@ -195,35 +195,7 @@ async runJsonGet(req, resp) {
     }
   }
 
-  async runListFilter(req, resp) {
-    try {
-      //add check to see what drop down the user selected
-      let q;
-      if (req.body.filterBy == 'title') {
-        q = {title : req.body.filter};
-      }
-      else if (req.body.filterBy == 'date') {
-        q = {date : req.body.filter};
-      }
-      else if (req.body.filterBy == '-filter type-') {
-        q = {};
-      }
-      else if (req.body.filterBy == 'all') {
-        q = {};
-      }
 
-      let res = await util.read(this.uri, this.database, this.posts, q) 
-      if (res.length == 0) {
-        resp.redirect('/list');
-      } else {
-        const query = { posts: res };
-        resp.render('list.ejs', query)
-      }   
-    } catch (e) {
-      console.error(e);
-      resp.status(500).send({ error: `Error from runListFilter: ${e.message}` })
-    } 
-  }
 
   async runCalendarGet(req, res){
     try{
