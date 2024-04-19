@@ -54,6 +54,7 @@
             function display_calander(date_month_number, thisyear){
                 current_month = date_month_number;
                 year = thisyear;
+                let todays_date = new Date()
 
                 const monthNames = [
                 'January', 'February', 'March', 'April', 'May', 'June',
@@ -91,7 +92,12 @@
                                             } else{
                                                 html += `<div>`;
                                             }
-                                            html += `${tasksFromTheDatabase[task].title}</div>`;
+
+                                            if ((date.getUTCDate() < todays_date.getDate()) || ( date.getUTCMonth() < todays_date.getMonth()) || (date.getUTCFullYear() < todays_date.getFullYear())){
+                                                html += `<del>${tasksFromTheDatabase[task].title}</del></div>`;
+                                            }else{
+                                                html += `${tasksFromTheDatabase[task].title}</div>`;
+                                            }
                                         }
                                     }
                                     html += `</td>`;
@@ -112,7 +118,12 @@
                                         } else{
                                             html += `<div>`;
                                         }
-                                        html += `${tasksFromTheDatabase[task].title}</div>`;
+                                        
+                                        if ((date.getUTCDate() < todays_date.getDate()) || ( date.getUTCMonth() < todays_date.getMonth()) || (date.getUTCFullYear() < todays_date.getFullYear())){
+                                            html += `<del>${tasksFromTheDatabase[task].title}</del></div>`;
+                                        }else{
+                                            html += `${tasksFromTheDatabase[task].title}</div>`;
+                                        }
                                     }
                                 }
                                 html += `</td>`;

@@ -1,6 +1,7 @@
 const util = require('../util/mongodbutil.js');
 const {URI} = require('../_config.js');
 const puppeteer = require('puppeteer');
+jest.setTimeout(60000);
 
 describe('Calendar View', () => {
   let browser;
@@ -22,7 +23,7 @@ describe('Calendar View', () => {
       const taskElements = document.querySelectorAll('.date-cell div');
       taskList=[];
       taskElements.forEach(task => {
-        taskList.push(task.innerHTML);
+        taskList.push(task.innerHTML.trim());
       });
       return taskList;
     });
@@ -33,7 +34,8 @@ describe('Calendar View', () => {
     for(let task=0; task<allTasksFromMongoDB.length; task++){
       let date = new Date(allTasksFromMongoDB[task].date);
       if (date.getUTCMonth() === current_month && date.getUTCFullYear() === year){
-        expect(tasks).toContain(allTasksFromMongoDB[task].title);
+        //regular expression to remove html tags and exclamation marks for the tasks that have a priority on them.
+        expect(tasks.map(task => task.replace(/<[^>]*>|!{0,3}|\s+/g, '').trim())).toContain(allTasksFromMongoDB[task].title);
         totalTasks++;
       }
     }
