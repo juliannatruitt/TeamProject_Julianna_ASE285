@@ -23,6 +23,7 @@
               <option value="all">All</option>
               <option value="title">Title</option>
               <option value="date">Date</option>
+              <option value="priority">Priority</option>
             </select>
           </div>
           <div>
@@ -38,27 +39,50 @@
       </form>
     </div>
 
-    <div class="container mt-2">
+<div class="container mt-2">
       <div class="row">
         <% for (var i=0; i < posts.length; i++){ %>
         <div class="col-md-4 mb-4">
           <div class="card">
             <div class="card-body">
               <!-- Task -->
-              <% if (posts[i].priority === "high") { %>
+              <% var today = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }); %>
+              <% if (new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) >= today){ %>
+                <% if (posts[i].priority === "high") { %>
+                  <h4 class="card-title">
+                  <span style="color:red"><b> !!! </b></span> <%= posts[i].title %></h4>
+                <% } else if (posts[i].priority === "medium") { %>  
                 <h4 class="card-title">
-                 <span style="color:red"><b> !!! </b></span> <%= posts[i].title %></h4>
-              <% } else if (posts[i].priority === "medium") { %>  
-              <h4 class="card-title">
-                <span style="color:orange"><b> !! </b></span> <%= posts[i].title %></h4>
-              <% } else if (posts[i].priority === "low") { %>
-              <h4 class="card-title">
-                <span style="color:blue"><b> ! </b></span><%= posts[i].title %></h4>
-              <% } else { %> 
-              <h4 class="card-title"><%= posts[i].title %></h4>
+                  <span style="color:orange"><b> !! </b></span> <%= posts[i].title %></h4>
+                <%  } else if (posts[i].priority === "low") { %>
+                <h4 class="card-title">
+                  <span style="color:blue"><b> ! </b></span><%= posts[i].title %></h4>
+                <% } else { %> 
+                <h4 class="card-title"><%= posts[i].title %></h4>
+                <% } %>
+                <!-- Task Tag -->
+            <p class="card-text">Tag: <%= posts[i].tag %></p>
+            <!-- Due Date -->
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %></p>
+              <% }else { %>
+                <% if (posts[i].priority === "high") { %>
+                  <h4 class="card-title" style="color:red">
+                  <span style="color:red"><b> !!! </b></span><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } else if (posts[i].priority === "medium") { %>  
+                <h4 class="card-title" style="color:red">
+                  <span style="color:orange"><b> !! </b></span><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } else if (posts[i].priority === "low") { %>
+                <h4 class="card-title" style="color:red">
+                  <span style="color:blue"><b> ! </b></span><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } else { %> 
+                <h4 class="card-title" style="color:red"><s style="color:red"> <%= posts[i].title %></s></h4>
+                <% } %>
+                <!-- Task Tag -->
+            <p class="card-text">Tag: <%= posts[i].tag %></p>
+            <!-- Due Date (Overdue) -->
+                <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'America/New_York' }) %> (Overdue)</p>
               <% } %>
-              <p class="card-text">Due: <%= new Date(posts[i].date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %></p>
-              <!-- Buttons -->
+                <!-- Buttons -->
               <div>
                 <% if (posts[i].completed) { %>
                 <button class="btn btn-success complete" data-id="<%= posts[i]._id %>">Complete</button>
@@ -124,3 +148,4 @@
       crossorigin="anonymous"></script>
   </body>
 </html>
+

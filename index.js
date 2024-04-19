@@ -1,12 +1,19 @@
 // npm install -g nodemon
+// npm install mongodb
 
 // npm install .
 // nodemon ./index.js
 // Access this server with http://localhost:5500
 
-const {URI} = require('./util/config.js');
 const { TodoApp } = require('./util/utility.js');
 const util = require('./util/mongodbutil.js');
+
+require('dotenv').config();
+const { MongoClient } = require('mongodb');
+const URI = process.env.MONGODB_URI;
+
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
 
 const DATABASE = 'todoapp';
 const POSTS = 'posts';
@@ -55,6 +62,26 @@ app.get('/list', async function(req, res) {
   }
 });
 
+
+app.get('/list', async function(req, res) {
+  try {
+    const tasks = await util.read(URI, DATABASE, POSTS, {});
+    res.render('list.ejs', { posts: tasks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: `Error fetching tasks: ${error.message}` });
+  }
+});
+
+app.post('/filter', async function(req, resp){
+  try {
+    await postapp.runListFilter(req, resp);
+    await postapp.runListFilter(req, resp);
+  } catch (e) {
+    console.error(e);
+  }   
+});
+
 app.post('/filter', async function(req, resp){
   try {
     await postapp.runListFilter(req, resp);
@@ -62,7 +89,6 @@ app.post('/filter', async function(req, resp){
     console.error(e);
   }   
 });
-
   
 app.delete('/delete', async function(req, resp){   
   try {
@@ -95,6 +121,7 @@ app.put('/edit', async function (req, resp) {
     console.error(e);
   }     
 });
+
 
 app.get('/posts', async (req, res) => {
   try {

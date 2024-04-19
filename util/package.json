@@ -1,13 +1,19 @@
 {
-  "name": "crud",
+  "name": "todoapp",
   "version": "1.0.0",
   "description": "",
-  "main": "mongodbutil.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
-  "author": "Dr. Samuel Cho",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "mongodb": "^6.3.0"
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "method-override": "^3.0.0",
+    "mongodb": "^4.3.0"
   }
 }
