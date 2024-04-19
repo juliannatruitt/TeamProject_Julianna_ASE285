@@ -92,7 +92,7 @@
                                                 html += `<div>`;
                                             }
 
-                                            if ((date.getUTCDate() < todays_date.getDate()) || ( date.getUTCMonth() < todays_date.getMonth()) || (date.getUTCFullYear() < todays_date.getFullYear())){
+                                            if ((date.getUTCDate() < todays_date.getDate() && date.getUTCMonth() == todays_date.getMonth() && date.getUTCFullYear() == todays_date.getFullYear()) || ( date.getUTCMonth() < todays_date.getMonth()) || (date.getUTCFullYear() < todays_date.getFullYear())){
                                                 html += `<del>${tasksFromTheDatabase[task].title}</del></div>`;
                                             }else{
                                                 html += `${tasksFromTheDatabase[task].title}</div>`;
@@ -118,7 +118,7 @@
                                             html += `<div>`;
                                         }
                                         
-                                        if ((date.getUTCDate() < todays_date.getDate()) || ( date.getUTCMonth() < todays_date.getMonth()) || (date.getUTCFullYear() < todays_date.getFullYear())){
+                                        if ((date.getUTCDate() < todays_date.getDate() && date.getUTCMonth() == todays_date.getMonth() && date.getUTCFullYear() == todays_date.getFullYear()) || ( date.getUTCMonth() < todays_date.getMonth()) || (date.getUTCFullYear() < todays_date.getFullYear())){
                                             html += `<del>${tasksFromTheDatabase[task].title}</del></div>`;
                                         }else{
                                             html += `${tasksFromTheDatabase[task].title}</div>`;
